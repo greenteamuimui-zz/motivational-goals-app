@@ -15,4 +15,34 @@ class User < ApplicationRecord
     self.session_token ||= SecureRandom::urlsafe_base64
   end
 
+  def reset_session_token!
+    self.session_token = SecureRandom::urlsafe_base64
+    self.save
+    self.session_token
+  end
+
+  def is_password?(password)
+    BCrypt::Password.new(self.password_digest).is_password?(password)
+  end
+
+  def self.find_by_credentials(username, password)
+    user = User.find_by(username: username)
+    return user if user && user.is_password?(password)
+    nil
+  end
+
+  has_many :authored_comments,
+    primary_key: :id,
+    foreign_key: :author_id,
+    class_name: :Comment
+
+  has_many :goals,
+    primary_key: :id,
+    foreign_key: :user_id,
+    class_name: :Goal
+
+  has_many :gained_comments,
+    through: :goals,
+    source: :comments
+
 end

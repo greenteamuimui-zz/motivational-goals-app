@@ -14,7 +14,7 @@ RSpec.describe UsersController, type: :controller do
     context "valid params" do
       it "logins the user with valid username and password combination" do
         post :create, user: {username: 'jack', password: "7654321"}
-        expect(response).to render_template(goals_url)
+        expect(response).to redirect_to(goals_url)
       end
     end
   end

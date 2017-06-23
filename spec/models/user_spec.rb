@@ -6,10 +6,15 @@ RSpec.describe User, type: :model do
   describe 'validations for User model' do
     it {should validate_presence_of(:username)}
     it {should validate_presence_of(:password_digest)}
-    it {should validate_presence_of(:session_token)}
     it {should validate_uniqueness_of(:username)}
     it {should validate_length_of(:password).is_at_least(6) }
+
+    it "validates the presence of a session token" do
+      expect(user.session_token).to_not eq(nil)
+    end
   end
+
+
 
   describe "validations for User model associations" do
     it {should have_many(:goals)}
@@ -51,9 +56,9 @@ RSpec.describe User, type: :model do
 
   describe "#self.find_by_credentials" do
     it "finds the right user by username and password" do
-      expect(User.find_by_credentials('Cherry', '1234567')).to eq(user)
+      jack = User.create(username:"Jack", password:"1234567")
+      expect(User.find_by_credentials('Jack', '1234567')).to eq(jack)
     end
   end
 
-  
 end
